@@ -4,9 +4,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,6 +15,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Calculator Calculator = new Calculator();
 
         textView = findViewById(R.id.textView);
 
@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setupButton(R.id.button9, "9");
         setupButton(R.id.button0, "0");
         setupButton(R.id.sumar, "+");
+        setupButton(R.id.multiplicar, "*");
 
         // Botón para limpiar el texto
         findViewById(R.id.buttonC).setOnClickListener(v -> {
@@ -42,21 +43,19 @@ public class MainActivity extends AppCompatActivity {
         // Botón para calcular el resultado
         findViewById(R.id.igual).setOnClickListener(v -> {
             try {
-                int result = calculate(currentText);
+                int result = Calculator.calculate(currentText);
                 textView.setText(String.valueOf(result));
             } catch (Exception e) {
                 textView.setText("-1"); // Si hay error, muestra -1
             }
         });
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
     }
 
-    // Método para configurar los botones
+    /**
+     * Método de configuración de un botón para escribir en el textView
+     * @param buttonId Id del botón
+     * @param value Valor a escribir en el textView
+     */
     private void setupButton(int buttonId, String value) {
         findViewById(buttonId).setOnClickListener(v -> {
             currentText += value;
@@ -64,19 +63,5 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // Función recursiva para realizar sumas
-    private int calculate(String input) throws Exception {
-        // Si no hay un símbolo '+' en la cadena, conviértelo en número
-        if (!input.contains("+")) {
-            return Integer.parseInt(input.trim());
-        } else {
-            // Dividimos la cadena en dos partes
-            int plusIndex = input.indexOf('+'); // Encuentra el primer '+'
-            String left = input.substring(0, plusIndex); // Parte izquierda
-            String right = input.substring(plusIndex + 1); // Parte derecha
 
-            // Llamadas recursivas
-            return calculate(left) + calculate(right);
-        }
-    }
 }
